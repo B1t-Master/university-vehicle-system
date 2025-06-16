@@ -11,6 +11,7 @@ import {
 import person from "../assets/person.png";
 import password from "../assets/password.png";
 import email from "../assets/email.png";
+import { handleRegister, handleSignIn } from "../authentication/authentication";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -71,7 +72,7 @@ const LoginSignup = () => {
         {!isLogin && (
           <TouchableOpacity
             style={[styles.button, styles.buttonOutline]}
-            //   onPress={handleRegister}
+            onPress={() => handleRegister(emailAddress, passwordValue)}
           >
             <Text style={styles.buttonOutlineText}>REGISTER</Text>
           </TouchableOpacity>
@@ -80,7 +81,7 @@ const LoginSignup = () => {
       <View style={styles.footer}>
         <Text>
           {isLogin ? "Don't have an account?" : "Have an account?"}
-          <Text style={styles.register} onPress={() => setIsLogin(!isLogin)}>
+          <Text style={styles.footerText} onPress={() => setIsLogin(!isLogin)}>
             {" "}
             {isLogin ? "Register" : "Login"}
           </Text>
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignItems: "center",
   },
-  register: {
+  footerText: {
     color: "blue",
   },
 });
