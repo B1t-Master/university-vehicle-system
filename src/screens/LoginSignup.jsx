@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
@@ -12,11 +12,25 @@ import person from "../assets/person.png";
 import password from "../assets/password.png";
 import email from "../assets/email.png";
 import { handleRegister, handleSignIn } from "../authentication/authentication";
+import { useNavigation } from "@react-navigation/core";
+import { auth } from "../firebase";
+import Dashboard from "./Dashboard";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [emailAddress, setEmailAddress] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("Dashboard");
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -63,7 +77,7 @@ const LoginSignup = () => {
         {isLogin && (
           <TouchableOpacity
             style={styles.button}
-            // onPress={handleSignIn}
+            onPress={() => handleSignIn(emailAddress, passwordValue)}
           >
             <Text style={styles.buttonText}>SIGN IN</Text>
           </TouchableOpacity>
