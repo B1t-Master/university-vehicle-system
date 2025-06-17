@@ -3,12 +3,19 @@ import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
 } from "firebase/auth";
 
 const handleAuthentication = async (authType, email, password) => {
   try {
-    const user = await authType(auth, email, password);
-    alert("Authentication successful: " + user.user.email);
+    const userCredential = await authType(auth, email, password);
+    if (authType === createUserWithEmailAndPassword) {
+      await sendEmailVerification(userCredential.user);
+    } else {
+      if (!userCredential.user.emailVerified) {
+        return;
+      }
+    }
   } catch (error) {
     alert("Authentication failed: " + error.message);
   }

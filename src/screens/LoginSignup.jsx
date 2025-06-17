@@ -21,11 +21,21 @@ const LoginSignup = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
   const navigation = useNavigation();
+  const isStrathmoreEmail = (email) => {
+    return /^(?:[a-zA-Z0-9._%+-]+@strathmore\.edu|admin@gmail\.com)$/.test(
+      email
+    );
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Dashboard");
+        if (user.emailVerified || user.email === "admin@gmail.com") {
+          navigation.navigate("Dashboard");
+        } else {
+          alert("Please verify your email before accessing the dashboard.");
+          auth.signOut();
+        }
       }
     });
 
@@ -77,7 +87,11 @@ const LoginSignup = () => {
         {isLogin && (
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleSignIn(emailAddress, passwordValue)}
+            onPress={() => {
+              isStrathmoreEmail(emailAddress)
+                ? handleSignIn(emailAddress, passwordValue)
+                : alert("Please use your Strathmore University email");
+            }}
           >
             <Text style={styles.buttonText}>SIGN IN</Text>
           </TouchableOpacity>
@@ -86,7 +100,13 @@ const LoginSignup = () => {
         {!isLogin && (
           <TouchableOpacity
             style={[styles.button, styles.buttonOutline]}
-            onPress={() => handleRegister(emailAddress, passwordValue)}
+            onPress={() =>
+              isStrathmoreEmail(emailAddress)
+                ? handleRegister(emailAddress, passwordValue)
+                : alert(
+                    "Please use a Strathmore University email (e.g., yourname@strathmore.edu)"
+                  )
+            }
           >
             <Text style={styles.buttonOutlineText}>REGISTER</Text>
           </TouchableOpacity>
