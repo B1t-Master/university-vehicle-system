@@ -20,18 +20,18 @@ const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [emailAddress, setEmailAddress] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const [usernameValue, setUsernameValue] = useState("");
   const navigation = useNavigation();
   const isStrathmoreEmail = (email) => {
-    return /^(?:[a-zA-Z0-9._%+-]+@strathmore\.edu|admin@gmail\.com)$/.test(
-      email
-    );
+    return /^(?:[a-zA-Z0-9._%+-]+@strathmore\.edu|admin@gmail\.com)$/.test(email);
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         if (user.emailVerified || user.email === "admin@gmail.com") {
-          navigation.navigate("Dashboard");
+          const username = user.displayName;
+          navigation.navigate("Dashboard", { username: username });
         } else {
           alert("Please verify your email before accessing the dashboard.");
           auth.signOut();
@@ -57,6 +57,19 @@ const LoginSignup = () => {
       <Text style={styles.subtitle}>Creation and Access System</Text>
 
       <View style={styles.inputContainer}>
+        {!isLogin && (
+          <View style={styles.inputSubContainer}>
+            <Image source={person} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#000"
+              value={usernameValue}
+              onChangeText={setUsernameValue}
+            />
+          </View>
+        )}
+
         <View style={styles.inputSubContainer}>
           <Image source={email} style={styles.inputIcon} />
           <TextInput
@@ -102,7 +115,7 @@ const LoginSignup = () => {
             style={[styles.button, styles.buttonOutline]}
             onPress={() =>
               isStrathmoreEmail(emailAddress)
-                ? handleRegister(emailAddress, passwordValue)
+                ? handleRegister(emailAddress, passwordValue, usernameValue)
                 : alert(
                     "Please use a Strathmore University email (e.g., yourname@strathmore.edu)"
                   )

@@ -18,7 +18,7 @@ export default function App() {
         <Stack.Screen
           options={{ headerBackVisible: false }}
           name="Dashboard"
-          component={Dashboard}
+          component={(props) => <Dashboard {...props} username={props.route.params.username} />}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Dashboard = () => {
+const Dashboard = ({ username }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to the Dashboard!</Text>
+      <Text style={styles.text}>Welcome {username}!</Text>
     </View>
   );
 };
