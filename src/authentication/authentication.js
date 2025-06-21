@@ -1,20 +1,15 @@
-import { auth, database } from "../firebase";
+import { auth } from "../firebase";
 import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
-  updateProfile,
 } from "firebase/auth";
-import { ref, set } from "firebase/database";
 
-const handleAuthentication = async (authType, email, password, username) => {
+const handleAuthentication = async (authType, email, password) => {
   try {
     const userCredential = await authType(auth, email, password);
     if (authType === createUserWithEmailAndPassword) {
-      await updateProfile(userCredential.user, {
-        displayName: username
-      });
       await sendEmailVerification(userCredential.user);
     } else {
       if (!userCredential.user.emailVerified) {
