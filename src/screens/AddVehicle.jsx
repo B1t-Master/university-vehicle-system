@@ -51,28 +51,82 @@ const AddVehicle = () => {
           <Text style={styles.headerButtonText}>Back</Text>
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { fontSize: 32 }]}>ADD A VEHICLE</Text>
-        <TouchableOpacity onPress={handleSave} style={styles.headerButton}>
-          <Text style={styles.headerButtonText}>Save</Text>
+      </View>
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Vehicle Make (e.g., Toyota)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Vehicle Make"
+            value={vehicleMake}
+            onChangeText={setVehicleMake}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Vehicle Model (e.g., Camry)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Vehicle Model"
+            value={vehicleModel}
+            onChangeText={setVehicleModel}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Number Plate (e.g., KCA 123A)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Number Plate"
+            value={numberPlate}
+            onChangeText={setNumberPlate}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Select Vehicle Type</Text>
+          {/* Implement dropdown here */}
+          <TextInput
+            style={styles.input}
+            placeholder="Vehicle Type"
+            value={vehicleType}
+            onChangeText={setVehicleType}
+          />
+          <View style={styles.imageContainer}>
+            <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
+              {vehicleImage ? (
+                <Image source={{ uri: vehicleImage }} style={styles.vehicleImage} />
+              ) : (
+                <Text style={styles.imagePlaceholderText}>
+                  [CAMERA]\nUPLOAD VEHICLE\nIMAGE\nTap to select image
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -86,6 +140,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  formContainer: {
+    margin: 5,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#f0f0f0',
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    fontSize: 16,
+    backgroundColor: '#fff',
   },
   submitButton: {
     backgroundColor: '#333',
