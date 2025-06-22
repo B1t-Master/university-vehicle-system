@@ -106,7 +106,6 @@ const AddVehicle = () => {
             )}
           </TouchableOpacity>
         </View>
-      </View>
 
       <View style={styles.imageContainer}>
         <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
@@ -119,7 +118,7 @@ const AddVehicle = () => {
           )}
         </TouchableOpacity>
       </View>
-
+      </View>
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
       </TouchableOpacity>
@@ -127,65 +126,42 @@ const AddVehicle = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  const styles = StyleSheet.create({
+  profileContainer: {
+    backgroundColor: '#f0f0f0',
     padding: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 20,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  headerButton: {
-    padding: 10,
-  },
-  headerButtonText: {
-    color: 'blue',
-  },
-  inputContainer: {
-    marginBottom: 15,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
   },
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  imagePlaceholder: {
-    width: 200,
-    height: 150,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderStyle: 'dashed',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imagePlaceholderText: {
-    fontSize: 14,
+  profileTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 10,
   },
-  vehicleImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+  profileDetails: {
+    marginBottom: 10,
+  },
+  profileName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  profileInfo: {
+    fontSize: 14,
+  },
+  editProfileButton: {
+    backgroundColor: '#333',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  editProfileButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addVehicleContainer: {
+    marginBottom: 20,
   },
   submitButton: {
     backgroundColor: '#333',

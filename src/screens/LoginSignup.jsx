@@ -53,8 +53,8 @@ const LoginSignup = () => {
         />
       </View>
 
-      <Text style={styles.title}>Car Sticker</Text>
-      <Text style={styles.subtitle}>Creation and Access System</Text>
+      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.subtitle}>Welcome</Text>
 
       <View style={styles.inputContainer}>
         <View style={styles.inputSubContainer}>

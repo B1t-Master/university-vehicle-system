@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import { auth } from '../firebase';
 
 const Dashboard = () => {
   const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to the Dashboard!</Text>
-      <TouchableOpacity
+      {user && (
+        <View style={styles.profileContainer}>
+          <Text style={styles.profileName}>{user.email}</Text>
+          <Text style={styles.profileEmail}>{user.email}</Text>
+        </View>
+      )}
+<TouchableOpacity
         style={styles.addVehicleButton}
         onPress={() => navigation.navigate('AddVehicle')}
       >
@@ -17,7 +37,6 @@ const Dashboard = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +49,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+  },
+  profileContainer: {
+    backgroundColor: '#f0f0f0',
+    padding: 20,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  profileEmail: {
+    fontSize: 16,
   },
   addVehicleButton: {
     backgroundColor: '#0782F9',
