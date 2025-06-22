@@ -47,21 +47,16 @@ const AddVehicle = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack} style={styles.headerButton}>
-          <Text style={styles.headerButtonText}>Back</Text>
-        </TouchableOpacity>
         <Text style={[styles.headerTitle, { fontSize: 32 }]}>ADD A VEHICLE</Text>
       </View>
       <View style={styles.formContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Vehicle Make (e.g., Toyota)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Vehicle Make"
-            value={vehicleMake}
-            onChangeText={setVehicleMake}
-          />
-        </View>
+        <TouchableOpacity style={[styles.submitButton, {width: 'auto'}]} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleBack} style={[styles.backButton, {width: 'auto'}]}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+      </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>Vehicle Model (e.g., Camry)</Text>
@@ -104,10 +99,6 @@ const AddVehicle = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
-        </TouchableOpacity>
-      </View>
     </ScrollView>
   );
 };
@@ -146,6 +137,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: '#f0f0f0',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   inputContainer: {
     marginBottom: 15,
@@ -164,11 +157,24 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#333',
-    padding: 15,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 5,
     alignItems: 'center',
+    width: 'auto',
   },
   submitButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  backButton: {
+    backgroundColor: '#333',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: 'auto',
+  },
+  backButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
