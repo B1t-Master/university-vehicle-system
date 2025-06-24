@@ -97,16 +97,16 @@ const AddVehicle = () => {
           </Picker>
         </View>
 
-        <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
-          {vehicleImage ? (
+        {vehicleImage && (
+          <View style={styles.imageContainer}>
             <Image source={{ uri: vehicleImage }} style={styles.vehicleImage} />
-          ) : (
-            <TouchableOpacity onPress={pickImage} style={styles.headerButton}>
-              <Text style={styles.headerButtonText}>
-                Upload Image
-              </Text>
-            </TouchableOpacity>
-          )}
+          </View>
+        )}
+        <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
+          <Image source={require('../assets/icon.png')} style={styles.uploadImageIcon} />
+          <Text style={[styles.headerButtonText, styles.uploadImageText]}>
+            Upload Image
+          </Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -140,15 +140,15 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     backgroundColor: '#333',
-    padding: 10,
+    padding: 5,
     borderRadius: 5,
     alignItems: 'center',
   },
   headerButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
   formContainer: {
     margin: 5,
     padding: 10,
@@ -201,6 +201,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  imageContainer: {
+    width: 100,
+    height: 100,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  uploadImageText: {
+    color: '#000',
+    textAlign: 'center',
+  },
+  uploadImageIcon: {
+    width: 10,
+    height: 50,
+    marginBottom: 10,
+  },
 });
-
 export default AddVehicle;
