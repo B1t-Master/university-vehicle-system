@@ -29,7 +29,7 @@ const AddVehicle = () => {
   };
 
   const handleSubmit = () => {
-    // Implement submit for approval functionality here
+    alert('Vehicle data submitted for approval!');
   };
 
   const pickImage = async () => {
@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginBottom: 10,
   },
   submitButtonText: {
     color: '#fff',
