@@ -1,3 +1,4 @@
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -100,9 +101,11 @@ const AddVehicle = () => {
           {vehicleImage ? (
             <Image source={{ uri: vehicleImage }} style={styles.vehicleImage} />
           ) : (
-            <Text style={styles.imagePlaceholderText}>
-              [CAMERA]\nUPLOAD VEHICLE\nIMAGE\nTap to select image
-            </Text>
+            <TouchableOpacity onPress={pickImage} style={styles.headerButton}>
+              <Text style={styles.headerButtonText}>
+                Upload Image
+              </Text>
+            </TouchableOpacity>
           )}
         </TouchableOpacity>
       </View>
