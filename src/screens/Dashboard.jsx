@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-  Image,
-} from "react-native";
+// import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/core";
-import { db, collection, onSnapshot, query, where } from "../firebase";
 import { auth } from "../firebase";
+
+const addIcon = require("../assets/add.png");
+const vehiclesIcon = require("../assets/car.png");
+const requestsIcon = require("../assets/request.png");
+const stickersIcon = require("../assets/sticker.png");
 
 const Dashboard = () => {
   const navigation = useNavigation();
-  // const [user, setUser] = useState(null);
-  const [vehicles, setVehicles] = useState([]);
+  // const [vehicles, setVehicles] = useState([]);
 
   const handleSignOut = () => {
     auth
@@ -24,178 +20,142 @@ const Dashboard = () => {
       })
       .catch((error) => alert(error.message));
   };
-  useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      const q = query(
-        collection(db, "users", user.uid, "vehicles"),
-        where("status", "==", "approved")
-      );
-      const vehiclesRef = collection(db, "users", user.uid, "vehicles");
 
-      const unsubscribe = onSnapshot(vehiclesRef, (querySnapshot) => {
-        const loadedVehicles = [];
-        querySnapshot.forEach((doc) => {
-          loadedVehicles.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-        setVehicles(loadedVehicles);
-      });
-
-      return () => unsubscribe();
-    }
-  }, []);
   return (
     <View style={styles.container}>
-      <View style={[styles.topBar]}>
-        <TouchableOpacity
-          style={[styles.button, styles.signOut]}
-          onPress={handleSignOut}
-        >
-          <Text style={styles.buttonText}>Sign out</Text>
+      <View style={styles.header}>
+        <Text style={styles.welcomeText}>
+          Welcome {auth.currentUser?.email.split("@")[0]}
+        </Text>
+      </View>
+      <View style={styles.actionCenter}>
+        <View style={styles.actionRow}>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("AddVehicle")}
+          >
+            <Image
+              source={addIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>ADD</Text>
+            <Text style={styles.squareButtonText}>VEHICLE</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("Vehicles")}
+          >
+            <Image
+              source={vehiclesIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>MY</Text>
+            <Text style={styles.squareButtonText}>VEHICLES</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.actionRow}>
+          <TouchableOpacity style={styles.squareButton}>
+            <Image
+              source={requestsIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>REQUESTS</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.squareButton}>
+            <Image
+              source={stickersIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>STICKERS</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerButton}>
+          <Text style={styles.footerButtonText}>SETTINGS</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.footerButton} onPress={handleSignOut}>
+          <Text style={styles.footerButtonText}>LOG OUT</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.text}>
-        Welcome {auth.currentUser?.email.split("@")[0]}
-      </Text>
-      {/* {user && (
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileName}>{user.email}</Text>
-        </View>
-      )} */}
-      <TouchableOpacity
-        style={[styles.button, styles.addVehicle]}
-        onPress={() => navigation.navigate("AddVehicle")}
-      >
-        <Text style={styles.buttonText}>Add Vehicle</Text>
-      </TouchableOpacity>
-      <FlatList
-        styles={styles.listContainer}
-        data={vehicles}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.cardContent}>
-            {item.imageBase64 ? (
-              <Image
-                source={{ uri: `data:image/jpeg;base64,${item.imageBase64}` }}
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-            ) : (
-              <View style={styles.noImage}>
-                <Text style={styles.noImageText}>No Image</Text>
-              </View>
-            )}
-            <Text style={styles.cardTitle}>
-              {item.vehicleMake}
-              {item.vehicleModel}
-            </Text>
-            <View style={styles.cardDetails}>
-              {/* <Text style={styles.cardText}>Year: {item.year}</Text> */}
-              <Text style={styles.cardText}>Plate: {item.numberPlate}</Text>
-            </View>
-          </View>
-        )}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    // flex: 1,
-    justifyContent: "centre",
-    // alignItems: "centre",
+    flex: 1,
+    backgroundColor: "#f5f5f5",
     padding: 20,
-    // margin: 20,
+    justifyContent: "space-between",
   },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: "10",
-  },
-  profileContainer: {
-    backgroundColor: "#f0f0f0",
-    padding: 20,
-    borderRadius: 10,
+  header: {
     marginTop: 20,
-  },
-  topBar: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  profileEmail: {
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: "#0782F9",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
     alignItems: "center",
-    margin: 10,
   },
-  buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
   },
-  signOut: {
-    alignSelf: "flex-end",
+  actionCenter: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    // gap: 40,
   },
-  addVehicle: {
-    alignSelf: "centre",
-    marginTop: "40",
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 20,
+    marginBottom: 20,
   },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  card: {
-    backgroundColor: "#fff",
+  squareButton: {
+    width: 150,
+    height: 150,
+    backgroundColor: "white",
     borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 15,
-    overflow: "hidden",
+    elevation: 2,
+    padding: 10,
   },
-  cardImage: {
-    width: "100%",
-    height: 180,
+  actionIcon: {
+    width: 60,
+    height: 60,
+    marginBottom: 12,
   },
-  cardContent: {
-    padding: 15,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
+  squareButtonText: {
     color: "#333",
-    marginBottom: 8,
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  cardDetails: {
+  footer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-  cardText: {
-    fontSize: 16,
-    color: "#666",
+  footerButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
-  emptyText: {
-    textAlign: "center",
+  footerButtonText: {
+    color: "#0782F9",
+    fontWeight: "bold",
     fontSize: 16,
-    color: "#999",
-    marginTop: 50,
   },
 });
 

@@ -90,13 +90,9 @@ const AddVehicle = () => {
         <Text style={[styles.headerTitle, { fontSize: 32 }]}>
           Add Your Vehicle
         </Text>
-        {/* <TouchableOpacity
-          onPress={handleAddVehicle}
-          style={styles.headerButton}
-        >
-          <Text style={styles.headerButtonText}>Save</Text>
-        </TouchableOpacity> */}
+        <View style={{ width: 60 }} />
       </View>
+
       <View style={styles.formContainer}>
         <InputField
           label="Vehicle Make (e.g., Toyota)"
@@ -179,15 +175,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerButton: {
-    backgroundColor: "#333",
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: "#0782F9",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginRight: 10,
     alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    minWidth: 80,
   },
   headerButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    textTransform: "uppercase", // Makes text consistently uppercase
+    letterSpacing: 0.5, // Slightly improves readability
   },
   formContainer: {
     margin: 5,
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   submitButton: {
-    backgroundColor: "#333",
+    backgroundColor: "#0782F9",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -231,7 +238,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   backButton: {
-    backgroundColor: "#333",
+    backgroundColor: "#0782F9",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",

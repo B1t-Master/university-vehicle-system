@@ -44,9 +44,6 @@ const AdminDashboard = () => {
         });
 
         setVehicles(vehiclesData);
-        console.log(
-          `Final result: ${vehiclesData.length} ${selectedTab} vehicles`
-        );
       },
       (error) => {
         console.error("CollectionGroup query error:", error);

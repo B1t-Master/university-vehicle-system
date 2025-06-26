@@ -6,6 +6,8 @@ import LoginSignup from "./src/screens/LoginSignup";
 import Dashboard from "./src/screens/Dashboard";
 import AddVehicle from "./src/screens/AddVehicle";
 import AdminDashboard from "./src/screens/AdminDashborad";
+import VehiclesScreen from "./src/screens/VehicleScreen";
+
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -31,6 +33,7 @@ export default function App() {
           name="AdminDashboard"
           component={AdminDashboard}
         />
+        <Stack.Screen name="Vehicles" component={VehiclesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
