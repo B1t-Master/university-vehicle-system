@@ -39,7 +39,9 @@ const AddVehicle = () => {
           vehicleImage,
           numberPlate,
           imageBase64: imageBase64 || null,
-          createdAt: new Date(), // Firestore can store dates natively
+          status: "pending",
+          userEmail: user.email,
+          createdAt: new Date(),
         });
         navigation.goBack();
       } catch (error) {

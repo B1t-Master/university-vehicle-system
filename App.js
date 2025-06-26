@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import LoginSignup from "./src/screens/LoginSignup";
 import Dashboard from "./src/screens/Dashboard";
 import AddVehicle from "./src/screens/AddVehicle";
-
+import AdminDashboard from "./src/screens/AdminDashborad";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -25,6 +25,11 @@ export default function App() {
           options={{ headerBackVisible: false }}
           name="AddVehicle"
           component={AddVehicle}
+        />
+        <Stack.Screen
+          options={{ headerBackVisible: false }}
+          name="AdminDashboard"
+          component={AdminDashboard}
         />
       </Stack.Navigator>
     </NavigationContainer>

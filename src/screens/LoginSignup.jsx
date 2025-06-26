@@ -31,7 +31,11 @@ const LoginSignup = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         if (user.emailVerified || user.email === "admin@gmail.com") {
-          navigation.navigate("Dashboard");
+          if (user.email === "admin@gmail.com") {
+            navigation.navigate("AdminDashboard");
+          } else {
+            navigation.navigate("Dashboard");
+          }
         } else {
           alert("Please verify your email before accessing the dashboard.");
           auth.signOut();

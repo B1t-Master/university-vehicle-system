@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/core";
-import { db, collection, onSnapshot } from "../firebase";
+import { db, collection, onSnapshot, query, where } from "../firebase";
 import { auth } from "../firebase";
 
 const Dashboard = () => {
@@ -27,6 +27,10 @@ const Dashboard = () => {
   useEffect(() => {
     const user = auth.currentUser;
     if (user) {
+      const q = query(
+        collection(db, "users", user.uid, "vehicles"),
+        where("status", "==", "approved")
+      );
       const vehiclesRef = collection(db, "users", user.uid, "vehicles");
 
       const unsubscribe = onSnapshot(vehiclesRef, (querySnapshot) => {

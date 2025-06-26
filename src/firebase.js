@@ -7,6 +7,11 @@ import {
   addDoc,
   getDocs,
   onSnapshot,
+  query,
+  where,
+  collectionGroup,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,4 +30,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { auth, db, collection, addDoc, getDocs, onSnapshot };
+export {
+  auth,
+  db,
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+  collectionGroup,
+  doc,
+  updateDoc,
+};
