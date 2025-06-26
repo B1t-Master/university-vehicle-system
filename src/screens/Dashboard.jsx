@@ -73,7 +73,7 @@ const Dashboard = () => {
               style={styles.actionIcon}
               resizeMode="contain"
             />
-            <Text style={styles.squareButtonText}>STICKERS</Text>
+            <Text style={styles.squareButtonText}>PROFILE</Text>
           </TouchableOpacity>
         </View>
       </View>
