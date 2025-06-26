@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+} from "react-native";
 import { useNavigation } from "@react-navigation/core";
+import { db, collection, onSnapshot } from "../firebase";
 import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
 
 const Dashboard = () => {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const [vehicles, setVehicles] = useState([]);
 
   const handleSignOut = () => {
     auth
@@ -16,7 +24,25 @@ const Dashboard = () => {
       })
       .catch((error) => alert(error.message));
   };
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (user) {
+      const vehiclesRef = collection(db, "users", user.uid, "vehicles");
 
+      const unsubscribe = onSnapshot(vehiclesRef, (querySnapshot) => {
+        const loadedVehicles = [];
+        querySnapshot.forEach((doc) => {
+          loadedVehicles.push({
+            id: doc.id,
+            ...doc.data(),
+          });
+        });
+        setVehicles(loadedVehicles);
+      });
+
+      return () => unsubscribe();
+    }
+  }, []);
   return (
     <View style={styles.container}>
       <View style={[styles.topBar]}>
@@ -41,6 +67,34 @@ const Dashboard = () => {
       >
         <Text style={styles.buttonText}>Add Vehicle</Text>
       </TouchableOpacity>
+      <FlatList
+        styles={styles.listContainer}
+        data={vehicles}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.cardContent}>
+            {item.imageBase64 ? (
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${item.imageBase64}` }}
+                style={styles.cardImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={styles.noImage}>
+                <Text style={styles.noImageText}>No Image</Text>
+              </View>
+            )}
+            <Text style={styles.cardTitle}>
+              {item.vehicleMake}
+              {item.vehicleModel}
+            </Text>
+            <View style={styles.cardDetails}>
+              {/* <Text style={styles.cardText}>Year: {item.year}</Text> */}
+              <Text style={styles.cardText}>Plate: {item.numberPlate}</Text>
+            </View>
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -97,6 +151,47 @@ const styles = StyleSheet.create({
   addVehicle: {
     alignSelf: "centre",
     marginTop: "40",
+  },
+  listContainer: {
+    paddingBottom: 20,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 15,
+    overflow: "hidden",
+  },
+  cardImage: {
+    width: "100%",
+    height: 180,
+  },
+  cardContent: {
+    padding: 15,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 8,
+  },
+  cardDetails: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cardText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#999",
+    marginTop: 50,
   },
 });
 
