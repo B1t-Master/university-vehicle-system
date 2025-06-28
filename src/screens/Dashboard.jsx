@@ -1,39 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-import { auth } from '../firebase';
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
 
-const Dashboard = () => {
-  const navigation = useNavigation();
-  const [user, setUser] = useState(null);
+const db = getFirestore();
+
+const Dashboard = ({ navigation }) => {
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
+    const fetchUserName = async () => {
+      try {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
 
-    return unsubscribe;
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(userData.name);
+        } else {
+          setUserName('User');
+        }
+      } catch (error) {
+        console.error("Error fetching user name:", error);
+        setUserName('User');
+      }
+    };
+
+    fetchUserName();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.navigate('login');
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to the Dashboard!</Text>
-      {user && (
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileName}>{user.email}</Text>
-          <Text style={styles.profileEmail}>{user.email}</Text>
-        </View>
-      )}
-<TouchableOpacity
-        style={styles.addVehicleButton}
-        onPress={() => navigation.navigate('AddVehicle')}
-      >
-        <Text style={styles.addVehicleButtonText}>Add Vehicle</Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.userDashboardText}>USER DASHBOARD</Text>
+      </View>
+      <Text style={styles.greeting}>Good afternoon</Text>
+      <Text style={styles.userName}>{userName}</Text>
+
+      <View style={styles.entitiesContainer}>
+        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('MyVehicles')}>
+          <Text style={styles.entityText}>My Vehicles</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('AddVehicle')}>
+          <Text style={styles.entityText}>Add a Vehicle</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('Requests')}>
+          <Text style={styles.entityText}>Requests</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('Stickers')}>
+          <Text style={styles.entityText}>Stickers</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Settings')}>
+          <Text style={styles.buttonText}>Settings</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Log Out</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -41,39 +77,54 @@ const Dashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
     padding: 20,
+    backgroundColor: '#fff',
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  profileContainer: {
-    backgroundColor: '#f0f0f0',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  profileEmail: {
-    fontSize: 16,
-  },
-  addVehicleButton: {
-    backgroundColor: '#0782F9',
-    width: '60%',
-    padding: 15,
-    borderRadius: 10,
+  header: {
     alignItems: 'center',
-    marginTop: 40,
+    marginBottom: 20,
   },
-  addVehicleButtonText: {
-    color: 'white',
+  userDashboardText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  greeting: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  userName: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  entitiesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  entityBox: {
+    width: '48%',
+    height: 100,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  entityText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: '#ddd',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
