@@ -48,7 +48,7 @@ const Dashboard = ({ navigation }) => {
       <Text style={styles.userName}>{userName}</Text>
 
       <View style={styles.entitiesContainer}>
-        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('MyVehicles')}>
+        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('MyVehiclesScreen')}>
           <Text style={styles.entityText}>My Vehicles</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('AddVehicle')}>

@@ -11,6 +11,7 @@ import { auth } from "./src/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { isAdmin } from "./src/authentication/authentication";
 
+
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [isAdminUser, setIsAdminUser] = useState(false);
@@ -44,6 +45,11 @@ export default function App() {
           options={{ headerBackVisible: false }}
           name="AddVehicle"
           component={AddVehicle}
+        />
+        <Stack.Screen
+          options={{ headerBackVisible: false }}
+          name="MyVehicles"
+          component={MyVehicles}
         />
         {isAdminUser && (
           <Stack.Screen
