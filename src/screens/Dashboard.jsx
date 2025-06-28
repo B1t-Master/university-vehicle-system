@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-const db = getFirestore();
+const addIcon = require("../assets/add.png");
+const vehiclesIcon = require("../assets/car.png");
+const requestsIcon = require("../assets/request.png");
+const stickersIcon = require("../assets/sticker.png");
 
-const Dashboard = ({ navigation }) => {
+const Dashboard = () => {
+  const navigation = useNavigation();
   const [userName, setUserName] = useState('');
-
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userDocRef = doc(getFirestore(), "users", auth.currentUser.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
@@ -30,44 +33,77 @@ const Dashboard = ({ navigation }) => {
     fetchUserName();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigation.navigate('login');
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("login");
+      })
+      .catch((error) => alert(error.message));
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.userDashboardText}>USER DASHBOARD</Text>
+        <Text style={styles.welcomeText}>
+          Welcome {auth.currentUser?.email.split("@")[0]}
+        </Text>
       </View>
-      <Text style={styles.greeting}>Good afternoon</Text>
-      <Text style={styles.userName}>{userName}</Text>
+      <View style={styles.actionCenter}>
+        <View style={styles.actionRow}>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("AddVehicle")}
+          >
+            <Image
+              source={addIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>ADD</Text>
+            <Text style={styles.squareButtonText}>VEHICLE</Text>
+          </TouchableOpacity>
 
-      <View style={styles.entitiesContainer}>
-        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('MyVehiclesScreen')}>
-          <Text style={styles.entityText}>My Vehicles</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('AddVehicle')}>
-          <Text style={styles.entityText}>Add a Vehicle</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('Requests')}>
-          <Text style={styles.entityText}>Requests</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.entityBox} onPress={() => navigation.navigate('Stickers')}>
-          <Text style={styles.entityText}>Stickers</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("MyVehiclesScreen")}
+          >
+            <Image
+              source={vehiclesIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>MY</Text>
+            <Text style={styles.squareButtonText}>VEHICLES</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.actionRow}>
+          <TouchableOpacity style={styles.squareButton}>
+            <Image
+              source={requestsIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>REQUESTS</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.squareButton}>
+            <Image
+              source={stickersIcon}
+              style={styles.actionIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.squareButtonText}>PROFILE</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Settings')}>
-          <Text style={styles.buttonText}>Settings</Text>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.footerButton}>
+          <Text style={styles.footerButtonText}>SETTINGS</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Log Out</Text>
+        <TouchableOpacity style={styles.footerButton} onPress={handleSignOut}>
+          <Text style={styles.footerButtonText}>LOG OUT</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -77,56 +113,70 @@ const Dashboard = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
     padding: 20,
-    backgroundColor: '#fff',
+    justifyContent: "space-between",
   },
   header: {
-    alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 20,
+    alignItems: "center",
   },
-  userDashboardText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  greeting: {
+  welcomeText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: "bold",
+    color: "#333",
   },
-  userName: {
-    fontSize: 16,
+  actionCenter: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    // gap: 40,
+  },
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 20,
     marginBottom: 20,
   },
-  entitiesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  entityBox: {
-    width: '48%',
-    height: 100,
-    backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  entityText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    backgroundColor: '#ddd',
+  squareButton: {
+    width: 150,
+    height: 150,
+    backgroundColor: "white",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
     padding: 10,
-    borderRadius: 5,
   },
-  buttonText: {
+  actionIcon: {
+    width: 60,
+    height: 60,
+    marginBottom: 12,
+  },
+  squareButtonText: {
+    color: "#333",
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  footerButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  footerButtonText: {
+    color: "#0782F9",
+    fontWeight: "bold",
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

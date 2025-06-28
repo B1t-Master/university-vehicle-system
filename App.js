@@ -5,12 +5,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import LoginSignup from "./src/screens/LoginSignup";
 import Dashboard from "./src/screens/Dashboard";
 import AddVehicle from "./src/screens/AddVehicle";
-import AdminDashboard from "./src/screens/AdminDashboard";
-import { useState, useEffect } from "react";
-import { auth } from "./src/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { isAdmin } from "./src/authentication/authentication";
-
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -46,18 +40,6 @@ export default function App() {
           name="AddVehicle"
           component={AddVehicle}
         />
-        <Stack.Screen
-          options={{ headerBackVisible: false }}
-          name="MyVehicles"
-          component={MyVehicles}
-        />
-        {isAdminUser && (
-          <Stack.Screen
-            options={{ headerBackVisible: false }}
-            name="AdminDashboard"
-            component={AdminDashboard}
-          />
-        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

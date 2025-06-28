@@ -1,36 +1,67 @@
-import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/core';
-import CheckBox from '@react-native-community/checkbox';
-import InputField from '../components/InputField';
+import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/core";
+import CheckBox from "@react-native-community/checkbox";
+import InputField from "../components/InputField";
+import { db, collection, addDoc } from "../firebase";
+import { auth } from "../firebase";
 
 const AddVehicle = () => {
   const navigation = useNavigation();
-  const [vehicleMake, setVehicleMake] = useState('');
-  const [vehicleModel, setVehicleModel] = useState('');
-  const [numberPlate, setNumberPlate] = useState('');
-  const [vehicleType, setVehicleType] = useState('');
+  const [vehicleMake, setVehicleMake] = useState("");
+  const [vehicleModel, setVehicleModel] = useState("");
+  const [numberPlate, setNumberPlate] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
   const [vehicleImage, setVehicleImage] = useState(null);
-
+  const [imageBase64, setImageBase64] = useState(null);
   const handleBack = () => {
     navigation.goBack();
   };
 
-  const handleSave = () => {
-    // Implement save functionality here
-    console.log('Vehicle Make:', vehicleMake);
-    console.log('Vehicle Model:', vehicleModel);
-    console.log('Number Plate:', numberPlate);
-    console.log('Vehicle Type:', vehicleType);
-    console.log('Vehicle Image:', vehicleImage);
-    alert('Vehicle data saved (check console)');
+  const handleAddVehicle = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        await addDoc(collection(db, "users", user.uid, "vehicles"), {
+          vehicleMake,
+          vehicleModel,
+          vehicleType,
+          vehicleImage,
+          numberPlate,
+          imageBase64: imageBase64 || null,
+          status: "pending",
+          userEmail: user.email,
+          createdAt: new Date(),
+        });
+        navigation.goBack();
+      } catch (error) {
+        console.error("Error adding vehicle: ", error);
+      }
+    }
   };
+  // const handleSave = () => {
+  //   // Implement save functionality here
+  //   console.log("Vehicle Make:", vehicleMake);
+  //   console.log("Vehicle Model:", vehicleModel);
+  //   console.log("Number Plate:", numberPlate);
+  //   console.log("Vehicle Type:", vehicleType);
+  //   console.log("Vehicle Image:", vehicleImage);
+  //   alert("Vehicle data saved (check console)");
+  // };
 
-  const handleSubmit = () => {
-    alert('Vehicle data submitted for approval!');
-  };
+  // const handleSubmit = () => {
+  //   alert("Vehicle data submitted for approval!");
+  // };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -38,12 +69,14 @@ const AddVehicle = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.5,
+      base64: true,
     });
 
-    console.log(result);
+    // console.log(result);
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets[0].base64) {
+      setImageBase64(result.assets[0].base64);
       setVehicleImage(result.assets[0].uri);
     }
   };
@@ -54,13 +87,13 @@ const AddVehicle = () => {
         <TouchableOpacity onPress={handleBack} style={styles.headerButton}>
           <Text style={styles.headerButtonText}>Back</Text>
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { fontSize: 32 }]}>ADD VEHICLE</Text>
-        <TouchableOpacity onPress={handleSave} style={styles.headerButton}>
-          <Text style={styles.headerButtonText}>Save</Text>
-        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { fontSize: 32 }]}>
+          Add Your Vehicle
+        </Text>
+        <View style={{ width: 60 }} />
       </View>
-      <View style={styles.formContainer}>
 
+      <View style={styles.formContainer}>
         <InputField
           label="Vehicle Make (e.g., Toyota)"
           placeholder="Vehicle Make"
@@ -87,9 +120,8 @@ const AddVehicle = () => {
           <Picker
             selectedValue={vehicleType}
             style={styles.picker}
-            onValueChange={(itemValue, itemIndex) =>
-              setVehicleType(itemValue)
-            }>
+            onValueChange={(itemValue, itemIndex) => setVehicleType(itemValue)}
+          >
             <Picker.Item label="Car" value="car" />
             <Picker.Item label="Bike" value="bike" />
             <Picker.Item label="Van" value="van" />
@@ -97,25 +129,29 @@ const AddVehicle = () => {
           </Picker>
         </View>
 
-        {vehicleImage && (
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: vehicleImage }} style={styles.vehicleImage} />
-          </View>
-        )}
-        <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
-          <Image source={require('../assets/icon.png')} style={styles.uploadImageIcon} />
-          <Text style={[styles.headerButtonText, styles.uploadImageText]}>
-            Upload Image
-          </Text>
+        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+          {vehicleImage ? (
+            <Image source={{ uri: vehicleImage }} style={styles.imagePreview} />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Image
+                source={require("../assets/icon.png")}
+                style={styles.uploadImageIcon}
+              />
+              <Text style={[styles.headerButtonText, styles.uploadImageText]}>
+                Upload Image
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleAddVehicle}>
         <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
       </TouchableOpacity>
-      <View style={{width: 10}} />
-      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+      <View style={{ width: 10 }} />
+      {/* <TouchableOpacity onPress={handleBack} style={styles.backButton}>
         <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ScrollView>
   );
 };
@@ -126,40 +162,51 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: 'normal',
-    textAlign: 'center',
+    fontWeight: "normal",
+    textAlign: "center",
     marginBottom: 10,
   },
   headerButton: {
-    backgroundColor: '#333',
-    padding: 5,
-    borderRadius: 5,
-    alignItems: 'center',
+    backgroundColor: "#0782F9",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginRight: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    minWidth: 80,
   },
   headerButtonText: {
-      color: '#fff',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    textTransform: "uppercase", // Makes text consistently uppercase
+    letterSpacing: 0.5, // Slightly improves readability
+  },
   formContainer: {
     margin: 5,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+    backgroundColor: "#f0f0f0",
+    flexDirection: "column",
+    justifyContent: "space-around",
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   checkboxLabel: {
@@ -172,51 +219,72 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   submitButton: {
-    backgroundColor: '#333',
+    backgroundColor: "#0782F9",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 10,
   },
   submitButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backButton: {
-    backgroundColor: '#333',
+    backgroundColor: "#0782F9",
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   backButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  imagePlaceholderText: {
+    textAlign: "center",
   },
   imageContainer: {
+    width: "100%",
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: "#f0f0f0",
+  },
+  imagePreview: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  imagePlaceholder: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  uploadImageIcon: {
     width: 100,
     height: 100,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
     marginBottom: 10,
   },
   uploadImageText: {
-    color: '#000',
-    textAlign: 'center',
+    color: "#000",
+    textAlign: "center",
   },
   uploadImageIcon: {
-    width: 10,
-    height: 50,
+    width: 200,
+    height: 100,
+    borderRadius: 10,
     marginBottom: 10,
+    margin: "auto",
   },
 });
 export default AddVehicle;

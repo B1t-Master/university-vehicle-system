@@ -14,7 +14,6 @@ import email from "../assets/email.png";
 import { handleRegister, handleSignIn } from "../authentication/authentication";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase";
-import Dashboard from "./Dashboard";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,7 +30,11 @@ const LoginSignup = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         if (user.emailVerified || user.email === "admin@gmail.com") {
-          navigation.navigate("Dashboard");
+          if (user.email === "admin@gmail.com") {
+            navigation.navigate("AdminDashboard");
+          } else {
+            navigation.navigate("Dashboard");
+          }
         } else {
           alert("Please verify your email before accessing the dashboard.");
           auth.signOut();
@@ -53,8 +56,8 @@ const LoginSignup = () => {
         />
       </View>
 
-      <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.subtitle}>Welcome</Text>
+      <Text style={styles.title}>Car Sticker</Text>
+      <Text style={styles.subtitle}>Creation and Access System</Text>
 
       <View style={styles.inputContainer}>
         <View style={styles.inputSubContainer}>
