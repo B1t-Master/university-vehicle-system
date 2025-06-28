@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-
+import Vehicles from "./Vehicles";
 const addIcon = require("../assets/add.png");
 const vehiclesIcon = require("../assets/car.png");
 const requestsIcon = require("../assets/request.png");
@@ -11,7 +11,7 @@ const stickersIcon = require("../assets/sticker.png");
 
 const Dashboard = () => {
   const navigation = useNavigation();
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   useEffect(() => {
     const fetchUserName = async () => {
       try {
@@ -22,11 +22,11 @@ const Dashboard = () => {
           const userData = userDoc.data();
           setUserName(userData.name);
         } else {
-          setUserName('User');
+          setUserName("User");
         }
       } catch (error) {
         console.error("Error fetching user name:", error);
-        setUserName('User');
+        setUserName("User");
       }
     };
 
@@ -37,7 +37,7 @@ const Dashboard = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.replace("login");
+        navigation.replace("LoginSignup");
       })
       .catch((error) => alert(error.message));
   };
@@ -66,7 +66,7 @@ const Dashboard = () => {
 
           <TouchableOpacity
             style={styles.squareButton}
-            onPress={() => navigation.navigate("MyVehicles")}
+            onPress={() => navigation.navigate("Vehicles")}
           >
             <Image
               source={vehiclesIcon}
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
+    marginLeft: -8,
     // gap: 40,
   },
   actionRow: {

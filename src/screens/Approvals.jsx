@@ -18,7 +18,7 @@ import {
   collectionGroup,
 } from "../firebase";
 
-const AdminDashboard = () => {
+const Approvals = () => {
   const [vehicles, setVehicles] = useState([]);
   const [selectedTab, setSelectedTab] = useState("pending");
 
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
           style={[styles.tab, selectedTab === "pending" && styles.activeTab]}
           onPress={() => setSelectedTab("pending")}
         >
-          <Text style={styles.tabText}>Pending ({vehicles.length})</Text>
+          <Text style={styles.tabText}>Pending </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, selectedTab === "approved" && styles.activeTab]}
@@ -243,4 +243,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdminDashboard;
+export default Approvals;

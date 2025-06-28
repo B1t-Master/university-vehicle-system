@@ -12,7 +12,7 @@ import { auth } from "../firebase";
 import { db, collection, onSnapshot, query, where } from "../firebase";
 import VehicleCard from "../components/VehicleCard";
 
-const VehiclesScreen = () => {
+const Vehicles = () => {
   const navigation = useNavigation();
   const [vehicles, setVehicles] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
@@ -54,7 +54,6 @@ const VehiclesScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>MY VEHICLES</Text>
         <TouchableOpacity
@@ -87,7 +86,6 @@ const VehiclesScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Vehicles List */}
       {filteredVehicles.length > 0 ? (
         <FlatList
           data={filteredVehicles}
@@ -202,4 +200,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VehiclesScreen;
+export default Vehicles;

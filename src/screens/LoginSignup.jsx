@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import person from "../assets/person.png";
 import password from "../assets/password.png";
 import email from "../assets/email.png";
 import { handleRegister, handleSignIn } from "../authentication/authentication";

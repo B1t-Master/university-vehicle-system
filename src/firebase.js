@@ -6,6 +6,7 @@ import {
   collection,
   addDoc,
   getDocs,
+  setDoc,
   onSnapshot,
   query,
   where,
@@ -42,4 +43,5 @@ export {
   collectionGroup,
   doc,
   updateDoc,
+  setDoc,
 };

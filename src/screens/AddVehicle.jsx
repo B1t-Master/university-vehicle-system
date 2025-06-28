@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Image,
@@ -11,7 +10,6 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/core";
-import CheckBox from "@react-native-community/checkbox";
 import InputField from "../components/InputField";
 import { db, collection, addDoc } from "../firebase";
 import { auth } from "../firebase";
@@ -49,22 +47,8 @@ const AddVehicle = () => {
       }
     }
   };
-  // const handleSave = () => {
-  //   // Implement save functionality here
-  //   console.log("Vehicle Make:", vehicleMake);
-  //   console.log("Vehicle Model:", vehicleModel);
-  //   console.log("Number Plate:", numberPlate);
-  //   console.log("Vehicle Type:", vehicleType);
-  //   console.log("Vehicle Image:", vehicleImage);
-  //   alert("Vehicle data saved (check console)");
-  // };
-
-  // const handleSubmit = () => {
-  //   alert("Vehicle data submitted for approval!");
-  // };
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -72,8 +56,6 @@ const AddVehicle = () => {
       quality: 0.5,
       base64: true,
     });
-
-    // console.log(result);
 
     if (!result.canceled && result.assets[0].base64) {
       setImageBase64(result.assets[0].base64);
