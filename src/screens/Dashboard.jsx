@@ -66,7 +66,7 @@ const Dashboard = () => {
 
           <TouchableOpacity
             style={styles.squareButton}
-            onPress={() => navigation.navigate("MyVehiclesScreen")}
+            onPress={() => navigation.navigate("MyVehicles")}
           >
             <Image
               source={vehiclesIcon}
