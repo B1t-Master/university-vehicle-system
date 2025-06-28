@@ -84,10 +84,10 @@ const AdminDashboard = () => {
 
       <View style={styles.quickStatsContainer}>
         <Text style={styles.quickStatsTitle}>QUICK STATS</Text>
-        <View style={styles.statsItem}>
+        {/* <View style={styles.statsItem}>
           <Text style={styles.statsLabel}>Total Users:</Text>
           <Text style={styles.statsValue}>{stats.totalUsers}</Text>
-        </View>
+        </View> */}
         <View style={styles.statsItem}>
           <Text style={styles.statsLabel}>Total Vehicles:</Text>
           <Text style={styles.statsValue}>{stats.totalVehicles}</Text>

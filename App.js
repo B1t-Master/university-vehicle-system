@@ -12,21 +12,6 @@ import AdminDashboard from "./src/screens/AdminDashboard";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const checkUserDocument = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-
-    if (!docSnap.exists()) {
-      await setDoc(userRef, {
-        email: user.email,
-        createdAt: new Date(),
-        // other default fields
-      });
-    }
-  };
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginSignup">

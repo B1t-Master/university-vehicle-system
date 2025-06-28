@@ -1,7 +1,32 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
-const VehicleCard = ({ item, status }) => {
+const VehicleCard = ({ item, status, onDelete }) => {
+  const handleDeletePress = () => {
+    Alert.alert(
+      "Delete Vehicle",
+      "Are you sure you want to delete this vehicle?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: onDelete,
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.vehicleCard}>
       {item.imageBase64 ? (
@@ -16,17 +41,25 @@ const VehicleCard = ({ item, status }) => {
         </View>
       )}
       <View style={styles.vehicleInfo}>
-        <View style={styles.statusContainer}>
-          <Text
-            style={[
-              styles.statusText,
-              status === "approved"
-                ? styles.approvedStatus
-                : styles.pendingStatus,
-            ]}
+        <View style={styles.headerRow}>
+          <View style={styles.statusContainer}>
+            <Text
+              style={[
+                styles.statusText,
+                status === "approved"
+                  ? styles.approvedStatus
+                  : styles.pendingStatus,
+              ]}
+            >
+              {status.toUpperCase()}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={handleDeletePress}
+            style={styles.deleteButton}
           >
-            {status.toUpperCase()}
-          </Text>
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
         </View>
         <Text style={styles.vehicleMakeModel}>
           {item.vehicleMake} {item.vehicleModel}
@@ -67,9 +100,14 @@ const styles = StyleSheet.create({
   vehicleInfo: {
     padding: 15,
   },
-  statusContainer: {
-    alignSelf: "flex-start",
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
+  },
+  statusContainer: {
+    // Removed alignSelf: "flex-start" as it's now handled by headerRow
   },
   statusText: {
     fontSize: 12,
@@ -96,6 +134,17 @@ const styles = StyleSheet.create({
   vehiclePlate: {
     fontSize: 16,
     color: "#666",
+  },
+  deleteButton: {
+    backgroundColor: "#FF3B30",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 12,
   },
 });
 

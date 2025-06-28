@@ -9,7 +9,15 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
-import { db, collection, onSnapshot, query, where } from "../firebase";
+import {
+  db,
+  collection,
+  onSnapshot,
+  query,
+  where,
+  doc,
+  deleteDoc,
+} from "../firebase";
 import VehicleCard from "../components/VehicleCard";
 
 const Vehicles = () => {
@@ -17,6 +25,16 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
 
+  const handleDeleteVehicle = async (vehicleId) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        await deleteDoc(doc(db, "users", user.uid, "vehicles", vehicleId));
+      } catch (error) {
+        console.error("Error deleting vehicle: ", error);
+      }
+    }
+  };
   useEffect(() => {
     const user = auth.currentUser;
     if (user) {
@@ -92,7 +110,11 @@ const Vehicles = () => {
           scrollEnabled={false}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <VehicleCard item={item} status={item.status} />
+            <VehicleCard
+              item={item}
+              status={item.status}
+              onDelete={() => handleDeleteVehicle(item.id)}
+            />
           )}
           contentContainerStyle={styles.listContainer}
         />

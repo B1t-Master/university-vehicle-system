@@ -13,6 +13,7 @@ import {
   collectionGroup,
   doc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -44,4 +45,5 @@ export {
   doc,
   updateDoc,
   setDoc,
+  deleteDoc,
 };
