@@ -29,4 +29,35 @@ const handleSignIn = (email, password) => {
   handleAuthentication(signInWithEmailAndPassword, email, password);
 };
 
-export { handleSignIn, handleRegister };
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+const db = getFirestore();
+
+const isAdmin = async (uid) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData.role === "admin";
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    return false;
+  }
+};
+
+const assignAdminRole = async (uid) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await setDoc(userDocRef, { role: "admin" });
+    console.log(`Admin role assigned to user with UID: ${uid}`);
+  } catch (error) {
+    console.error("Error assigning admin role:", error);
+  }
+};
+
+export { handleSignIn, handleRegister, isAdmin, assignAdminRole };
