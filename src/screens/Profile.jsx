@@ -1,7 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { auth } from '../firebase';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const Profile = () => {
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [vehicleCount, setVehicleCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDocRef = doc(getFirestore(), "users", auth.currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUserName(userData.name);
+          setUserEmail(auth.currentUser.email);
+        } else {
+          setUserName("User");
+          setUserEmail('');
+        }
+
+        // Fetch vehicle count
+        const vehiclesCollection = collection(getFirestore(), "vehicles");
+        const q = query(vehiclesCollection, where("userId", "==", auth.currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        setVehicleCount(querySnapshot.size);
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setUserName("User");
+        setUserEmail('');
+        setVehicleCount(0);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const getNameFromEmail = (email) => {
+    return email.split('@')[0];
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -21,14 +63,12 @@ const Profile = () => {
       </View>
 
       {/* User Info */}
-      <Text style={styles.name}>John Doe</Text>
+      <Text style={styles.name}>{getNameFromEmail(userEmail)}</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.infoLabel}>EMAIL:</Text>
-        <Text style={styles.infoText}>john.doe@email.com</Text>
-        <Text style={styles.infoLabel}>PHONE:</Text>
-        <Text style={styles.infoText}>+254 123 456 789</Text>
+        <Text style={styles.infoText}>{userEmail}</Text>
         <Text style={styles.infoLabel}>VEHICLES:</Text>
-        <Text style={styles.infoText}>3</Text>
+        <Text style={styles.infoText}>{vehicleCount}</Text>
       </View>
 
       {/* Edit Profile Button */}
@@ -52,6 +92,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#0782F9',
   },
   navigation: {
     flexDirection: 'row',
@@ -92,7 +133,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    backgroundColor: '#333',
+    backgroundColor: '#0782F9',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
