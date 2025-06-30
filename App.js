@@ -38,6 +38,7 @@ export default function App() {
         <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
         <Stack.Screen name="Approvals" component={Approvals} />
         <Stack.Screen name="Profile" component={require('./src/screens/Profile').default} />
+        <Stack.Screen name="EditProfile" component={require('./src/screens/EditProfile').default} />
       </Stack.Navigator>
     </NavigationContainer>
   );

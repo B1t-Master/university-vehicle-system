@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from "@react-navigation/core";
 import { auth } from '../firebase';
 import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const Profile = () => {
+  const navigation = useNavigation();
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [vehicleCount, setVehicleCount] = useState(0);
@@ -53,11 +55,11 @@ const Profile = () => {
 
       {/* Navigation */}
       <View style={styles.navigation}>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate("Dashboard")}>
           <Text style={styles.navButtonText}>BACK</Text>
         </TouchableOpacity>
         <Text style={styles.profileText}>PROFILE</Text>
-        <TouchableOpacity style={styles.navButton}>
+        <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate("EditProfile")}>
           <Text style={styles.navButtonText}>EDIT</Text>
         </TouchableOpacity>
       </View>
@@ -72,7 +74,7 @@ const Profile = () => {
       </View>
 
       {/* Edit Profile Button */}
-      <TouchableOpacity style={styles.editButton}>
+      <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate("EditProfile")}>
         <Text style={styles.editButtonText}>EDIT PROFILE</Text>
       </TouchableOpacity>
     </View>
