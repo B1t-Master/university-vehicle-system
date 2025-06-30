@@ -88,7 +88,7 @@ const Dashboard = () => {
             <Text style={styles.squareButtonText}>REQUESTS</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.squareButton}>
+          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate("Profile")}>
             <Image
               source={stickersIcon}
               style={styles.actionIcon}
