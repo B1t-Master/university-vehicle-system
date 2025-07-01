@@ -8,6 +8,7 @@ import AddVehicle from "./src/screens/AddVehicle";
 import Vehicles from "./src/screens/Vehicles";
 import Approvals from "./src/screens/Approvals";
 import AdminDashboard from "./src/screens/AdminDashboard";
+import Users from "./src/screens/Users";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,9 +37,16 @@ export default function App() {
           component={Vehicles}
         />
         <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
+        <Stack.Screen name="Users" component={Users} />
         <Stack.Screen name="Approvals" component={Approvals} />
-        <Stack.Screen name="Profile" component={require('./src/screens/Profile').default} />
-        <Stack.Screen name="EditProfile" component={require('./src/screens/EditProfile').default} />
+        <Stack.Screen
+          name="Profile"
+          component={require("./src/screens/Profile").default}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={require("./src/screens/EditProfile").default}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

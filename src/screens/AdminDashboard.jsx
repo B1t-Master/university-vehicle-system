@@ -16,7 +16,7 @@ import { db } from "../firebase";
 const AdminDashboard = () => {
   const navigation = useNavigation();
   const [stats, setStats] = useState({
-    totalUsers: 3,
+    // totalUsers: 3,
     totalVehicles: 0,
     pendingVehicles: 0,
   });
@@ -24,11 +24,9 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // const  db= getFirestore();
-
         const usersCount = await getCountFromServer(collection(db, "users"));
         const totalUsers = usersCount.data().count;
-        console.log(usersCount);
+        // console.log(usersCount);
         const allVehiclesQuery = collectionGroup(db, "vehicles");
         const vehiclesSnapshot = await getDocs(allVehiclesQuery);
         const totalVehicles = vehiclesSnapshot.size;
@@ -65,14 +63,24 @@ const AdminDashboard = () => {
           >
             <Text style={styles.squareButtonText}>APPROVALS</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.squareButton}>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("Users")}
+          >
             <Text style={styles.squareButtonText}>USERS</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.squareButton}>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() =>
+              navigation.navigate("Vehicles", {
+                adminView: true,
+                showOnlyApproved: true,
+              })
+            }
+          >
             <Text style={styles.squareButtonText}>ALL VEHICLES</Text>
           </TouchableOpacity>
 

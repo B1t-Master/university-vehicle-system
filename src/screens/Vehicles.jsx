@@ -7,7 +7,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase";
 import {
   db,
@@ -17,28 +17,31 @@ import {
   where,
   doc,
   deleteDoc,
+  collectionGroup,
 } from "../firebase";
 import VehicleCard from "../components/VehicleCard";
 
 const Vehicles = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [vehicles, setVehicles] = useState([]);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("approved");
+  const isAdminView = route.params?.adminView || false;
+  const showOnlyApproved = route.params?.showOnlyApproved || false;
 
-  const handleDeleteVehicle = async (vehicleId) => {
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        await deleteDoc(doc(db, "users", user.uid, "vehicles", vehicleId));
-      } catch (error) {
-        console.error("Error deleting vehicle: ", error);
-      }
-    }
-  };
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      let q;
+    let unsubscribe;
+    let q;
+
+    if (isAdminView) {
+      q = query(
+        collectionGroup(db, "vehicles"),
+        where("status", "==", "approved")
+      );
+    } else {
+      const user = auth.currentUser;
+      if (!user) return;
+
       if (activeTab === "all") {
         q = query(
           collection(db, "users", user.uid, "vehicles"),
@@ -50,70 +53,95 @@ const Vehicles = () => {
           where("status", "==", activeTab)
         );
       }
-
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const loadedVehicles = [];
-        querySnapshot.forEach((doc) => {
-          loadedVehicles.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-        setVehicles(loadedVehicles);
-      });
-      return () => unsubscribe();
     }
-  }, [activeTab]);
 
-  const filteredVehicles = vehicles.filter((vehicle) => {
-    if (activeTab === "all") return true;
-    return vehicle.status === activeTab;
-  });
+    unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const loadedVehicles = [];
+      querySnapshot.forEach((doc) => {
+        const vehicleData = {
+          id: doc.id,
+          ...doc.data(),
+        };
+
+        if (isAdminView) {
+          vehicleData.userId = doc.ref.parent.parent.id;
+        }
+
+        loadedVehicles.push(vehicleData);
+      });
+      setVehicles(loadedVehicles);
+    });
+
+    return () => unsubscribe();
+  }, [activeTab, isAdminView, showOnlyApproved]);
+
+  const handleDeleteVehicle = async (vehicleId, userId = null) => {
+    try {
+      if (isAdminView && userId) {
+        await deleteDoc(doc(db, "users", userId, "vehicles", vehicleId));
+      } else {
+        const user = auth.currentUser;
+        if (user) {
+          await deleteDoc(doc(db, "users", user.uid, "vehicles", vehicleId));
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting vehicle: ", error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>MY VEHICLES</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("AddVehicle")}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>
+          {isAdminView ? "ALL VEHICLES" : "MY VEHICLES"}
+        </Text>
+        {!isAdminView && (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigation.navigate("AddVehicle")}
+          >
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Status Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "all" && styles.activeTab]}
-          onPress={() => setActiveTab("all")}
-        >
-          <Text style={styles.tabText}>ALL</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "approved" && styles.activeTab]}
-          onPress={() => setActiveTab("approved")}
-        >
-          <Text style={styles.tabText}>APPROVED</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === "pending" && styles.activeTab]}
-          onPress={() => setActiveTab("pending")}
-        >
-          <Text style={styles.tabText}>PENDING</Text>
-        </TouchableOpacity>
-      </View>
+      {!showOnlyApproved && (
+        <View style={styles.tabContainer}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "all" && styles.activeTab]}
+            onPress={() => setActiveTab("all")}
+          >
+            <Text style={styles.tabText}>ALL</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "approved" && styles.activeTab]}
+            onPress={() => setActiveTab("approved")}
+          >
+            <Text style={styles.tabText}>APPROVED</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "pending" && styles.activeTab]}
+            onPress={() => setActiveTab("pending")}
+          >
+            <Text style={styles.tabText}>PENDING</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-      {filteredVehicles.length > 0 ? (
+      {vehicles.length > 0 ? (
         <FlatList
-          data={filteredVehicles}
+          data={vehicles}
           scrollEnabled={false}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <VehicleCard
               item={item}
               status={item.status}
-              onDelete={() => handleDeleteVehicle(item.id)}
+              onDelete={() =>
+                handleDeleteVehicle(item.id, isAdminView ? item.userId : null)
+              }
+              showOwner={isAdminView}
             />
           )}
           contentContainerStyle={styles.listContainer}
@@ -121,24 +149,27 @@ const Vehicles = () => {
       ) : (
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>
-            {activeTab === "approved"
+            {isAdminView
+              ? "No verified vehicles found"
+              : activeTab === "approved"
               ? "No approved vehicles"
               : activeTab === "pending"
               ? "No pending vehicles"
-              : "No vehicles added yet"}
+              : "No vehicles found"}
           </Text>
-          <TouchableOpacity
-            style={styles.addVehicleButton}
-            onPress={() => navigation.navigate("AddVehicle")}
-          >
-            <Text style={styles.addVehicleButtonText}>ADD VEHICLE</Text>
-          </TouchableOpacity>
+          {!isAdminView && (
+            <TouchableOpacity
+              style={styles.addVehicleButton}
+              onPress={() => navigation.navigate("AddVehicle")}
+            >
+              <Text style={styles.addVehicleButtonText}>ADD VEHICLE</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

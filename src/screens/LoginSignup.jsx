@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import password from "../assets/password.png";
 import email from "../assets/email.png";
-import { handleRegister, handleSignIn } from "../authentication/authentication";
+import { handleRegister, handleSignIn } from "../utility/authentication";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase";
 
