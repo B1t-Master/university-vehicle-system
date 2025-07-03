@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/core";
@@ -22,35 +23,73 @@ const AddVehicle = () => {
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleImage, setVehicleImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
+  const [errors, setErrors] = useState({});
+
   const handleBack = () => {
     navigation.goBack();
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!vehicleMake.trim()) {
+      newErrors.vehicleMake = "Vehicle make is required";
+    }
+
+    if (!vehicleModel.trim()) {
+      newErrors.vehicleModel = "Vehicle model is required";
+    }
+
+    if (!numberPlate.trim()) {
+      newErrors.numberPlate = "Number plate is required";
+    } else if (!/^[A-Z0-9\s]{3,10}$/i.test(numberPlate)) {
+      newErrors.numberPlate = "Enter a valid number plate";
+    }
+
+    if (!vehicleType) {
+      newErrors.vehicleType = "Please select vehicle type";
+    }
+
+    if (!vehicleImage) {
+      newErrors.vehicleImage = "Vehicle image is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddVehicle = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     const user = auth.currentUser;
     if (user) {
       try {
         await addDoc(collection(db, "users", user.uid, "vehicles"), {
-          vehicleMake,
-          vehicleModel,
+          vehicleMake: vehicleMake.trim(),
+          vehicleModel: vehicleModel.trim(),
           vehicleType,
           vehicleImage,
-          numberPlate,
+          numberPlate: numberPlate.trim().toUpperCase(),
           imageBase64: imageBase64 || null,
           status: "pending",
           userEmail: user.email,
           createdAt: new Date(),
         });
-        navigation.goBack();
+        Alert.alert("Success", "Vehicle submitted for approval", [
+          { text: "OK", onPress: () => navigation.goBack() },
+        ]);
       } catch (error) {
         console.error("Error adding vehicle: ", error);
+        Alert.alert("Error", "Failed to add vehicle. Please try again.");
       }
     }
   };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.5,
@@ -60,18 +99,20 @@ const AddVehicle = () => {
     if (!result.canceled && result.assets[0].base64) {
       setImageBase64(result.assets[0].base64);
       setVehicleImage(result.assets[0].uri);
+      setErrors({ ...errors, vehicleImage: null });
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.headerButton}>
           <Text style={styles.headerButtonText}>Back</Text>
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { fontSize: 32 }]}>
-          Add Your Vehicle
-        </Text>
+        <Text style={styles.headerTitle}>Add Your Vehicle</Text>
         <View style={{ width: 60 }} />
       </View>
 
@@ -80,21 +121,33 @@ const AddVehicle = () => {
           label="Vehicle Make (e.g., Toyota)"
           placeholder="Vehicle Make"
           value={vehicleMake}
-          onChangeText={setVehicleMake}
+          onChangeText={(text) => {
+            setVehicleMake(text);
+            setErrors({ ...errors, vehicleMake: null });
+          }}
+          error={errors.vehicleMake}
         />
 
         <InputField
           label="Vehicle Model (e.g., Camry)"
           placeholder="Vehicle Model"
           value={vehicleModel}
-          onChangeText={setVehicleModel}
+          onChangeText={(text) => {
+            setVehicleModel(text);
+            setErrors({ ...errors, vehicleModel: null });
+          }}
+          error={errors.vehicleModel}
         />
 
         <InputField
           label="Number Plate (e.g., KCA 123A)"
           placeholder="Number Plate"
           value={numberPlate}
-          onChangeText={setNumberPlate}
+          onChangeText={(text) => {
+            setNumberPlate(text);
+            setErrors({ ...errors, numberPlate: null });
+          }}
+          error={errors.numberPlate}
         />
 
         <View style={styles.inputContainer}>
@@ -102,38 +155,51 @@ const AddVehicle = () => {
           <Picker
             selectedValue={vehicleType}
             style={styles.picker}
-            onValueChange={(itemValue, itemIndex) => setVehicleType(itemValue)}
+            onValueChange={(itemValue) => {
+              setVehicleType(itemValue);
+              setErrors({ ...errors, vehicleType: null });
+            }}
           >
+            <Picker.Item label="Select vehicle type" value="" />
             <Picker.Item label="Car" value="car" />
             <Picker.Item label="Bike" value="bike" />
             <Picker.Item label="Van" value="van" />
             <Picker.Item label="Truck" value="truck" />
           </Picker>
+          {errors.vehicleType && (
+            <Text style={styles.errorText}>{errors.vehicleType}</Text>
+          )}
         </View>
 
-        <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
-          {vehicleImage ? (
-            <Image source={{ uri: vehicleImage }} style={styles.imagePreview} />
-          ) : (
-            <View style={styles.imagePlaceholder}>
+        <View>
+          <Text style={styles.inputLabel}>Vehicle Image</Text>
+          <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+            {vehicleImage ? (
               <Image
-                source={require("../assets/icon.png")}
-                style={styles.uploadImageIcon}
+                source={{ uri: vehicleImage }}
+                style={styles.imagePreview}
               />
-              <Text style={[styles.headerButtonText, styles.uploadImageText]}>
-                Upload Image
-              </Text>
-            </View>
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <Image
+                  source={require("../assets/icon.png")}
+                  style={styles.uploadImageIcon}
+                />
+                <Text style={[styles.headerButtonText, styles.uploadImageText]}>
+                  Upload Image
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          {errors.vehicleImage && (
+            <Text style={styles.errorText}>{errors.vehicleImage}</Text>
           )}
-        </TouchableOpacity>
+        </View>
       </View>
+
       <TouchableOpacity style={styles.submitButton} onPress={handleAddVehicle}>
         <Text style={styles.submitButtonText}>SUBMIT FOR APPROVAL</Text>
       </TouchableOpacity>
-      <View style={{ width: 10 }} />
-      {/* <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity> */}
     </ScrollView>
   );
 };
@@ -143,25 +209,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  scrollContent: {
+    paddingBottom: 30,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    justifyContent: "space-between",
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: "normal",
+    fontSize: 24,
+    fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 10,
+    flex: 1,
   },
   headerButton: {
     backgroundColor: "#0782F9",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
-    marginRight: 10,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -175,63 +242,49 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    textTransform: "uppercase", // Makes text consistently uppercase
-    letterSpacing: 0.5, // Slightly improves readability
+    textTransform: "uppercase",
   },
   formContainer: {
-    margin: 5,
-    padding: 10,
+    marginBottom: 20,
+    padding: 15,
     borderRadius: 10,
     backgroundColor: "#f0f0f0",
-    flexDirection: "column",
-    justifyContent: "space-around",
   },
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 5,
-  },
-  checkboxLabel: {
-    fontSize: 16,
-    marginLeft: 8,
+  inputContainer: {
+    marginBottom: 15,
   },
   inputLabel: {
     fontSize: 16,
     marginBottom: 5,
+    fontWeight: "500",
   },
-  input: {
+  picker: {
+    backgroundColor: "#fff",
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    backgroundColor: "#fff",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginTop: 5,
   },
   submitButton: {
     backgroundColor: "#0782F9",
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 8,
     alignItems: "center",
-    marginBottom: 10,
+    marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   submitButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-  },
-  backButton: {
-    backgroundColor: "#0782F9",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  imagePlaceholderText: {
-    textAlign: "center",
   },
   imageContainer: {
     width: "100%",
@@ -241,6 +294,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     backgroundColor: "#f0f0f0",
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   imagePreview: {
     width: "100%",
@@ -258,15 +313,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   uploadImageText: {
-    color: "#000",
+    color: "#0782F9",
     textAlign: "center",
   },
-  uploadImageIcon: {
-    width: 200,
-    height: 100,
-    borderRadius: 10,
-    marginBottom: 10,
-    margin: "auto",
-  },
 });
+
 export default AddVehicle;

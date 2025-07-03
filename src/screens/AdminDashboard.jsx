@@ -11,22 +11,29 @@ import {
   collectionGroup,
   getCountFromServer,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 
 const AdminDashboard = () => {
   const navigation = useNavigation();
   const [stats, setStats] = useState({
-    // totalUsers: 3,
     totalVehicles: 0,
     pendingVehicles: 0,
   });
+
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("LoginSignup");
+      })
+      .catch((error) => alert(error.message));
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const usersCount = await getCountFromServer(collection(db, "users"));
         const totalUsers = usersCount.data().count;
-        // console.log(usersCount);
         const allVehiclesQuery = collectionGroup(db, "vehicles");
         const vehiclesSnapshot = await getDocs(allVehiclesQuery);
         const totalVehicles = vehiclesSnapshot.size;
@@ -55,6 +62,7 @@ const AdminDashboard = () => {
       <View style={styles.header}>
         <Text style={styles.adminPanelText}>ADMIN PANEL</Text>
       </View>
+
       <View style={styles.actionCenter}>
         <View style={styles.actionRow}>
           <TouchableOpacity
@@ -65,7 +73,7 @@ const AdminDashboard = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.squareButton}
-            onPress={() => navigation.navigate("Users")}
+            onPress={() => navigation.navigate("ComingSoon")}
           >
             <Text style={styles.squareButtonText}>USERS</Text>
           </TouchableOpacity>
@@ -83,7 +91,6 @@ const AdminDashboard = () => {
           >
             <Text style={styles.squareButtonText}>ALL VEHICLES</Text>
           </TouchableOpacity>
-
           <TouchableOpacity style={styles.squareButton}>
             <Text style={styles.squareButtonText}>REPORTS</Text>
           </TouchableOpacity>
@@ -92,10 +99,6 @@ const AdminDashboard = () => {
 
       <View style={styles.quickStatsContainer}>
         <Text style={styles.quickStatsTitle}>QUICK STATS</Text>
-        {/* <View style={styles.statsItem}>
-          <Text style={styles.statsLabel}>Total Users:</Text>
-          <Text style={styles.statsValue}>{stats.totalUsers}</Text>
-        </View> */}
         <View style={styles.statsItem}>
           <Text style={styles.statsLabel}>Total Vehicles:</Text>
           <Text style={styles.statsValue}>{stats.totalVehicles}</Text>
@@ -104,6 +107,11 @@ const AdminDashboard = () => {
           <Text style={styles.statsLabel}>Pending Approvals:</Text>
           <Text style={styles.statsValue}>{stats.pendingVehicles}</Text>
         </View>
+      </View>
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
+          <Text style={styles.logoutButtonText}>LOG OUT</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -114,7 +122,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 20,
-    justifyContent: "space-between",
   },
   header: {
     marginTop: 20,
@@ -129,12 +136,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
-    marginLeft: -10,
   },
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 20,
     marginBottom: 20,
   },
   squareButton: {
@@ -151,11 +156,6 @@ const styles = StyleSheet.create({
     elevation: 2,
     padding: 10,
   },
-  actionIcon: {
-    width: 60,
-    height: 60,
-    marginBottom: 12,
-  },
   squareButtonText: {
     color: "#333",
     fontSize: 14,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginTop: -30,
+    marginBottom: 20,
   },
   quickStatsTitle: {
     fontSize: 18,
@@ -192,6 +192,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+  },
+  logoutContainer: {
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  logoutButton: {
+    backgroundColor: "#0782F9",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { auth } from "../firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import Vehicles from "./Vehicles";
 const addIcon = require("../assets/add.png");
 const vehiclesIcon = require("../assets/car.png");
 const requestsIcon = require("../assets/request.png");
@@ -88,7 +87,10 @@ const Dashboard = () => {
             <Text style={styles.squareButtonText}>REQUESTS</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.squareButton} onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity
+            style={styles.squareButton}
+            onPress={() => navigation.navigate("Profile")}
+          >
             <Image
               source={stickersIcon}
               style={styles.actionIcon}

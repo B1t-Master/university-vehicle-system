@@ -8,7 +8,7 @@ import AddVehicle from "./src/screens/AddVehicle";
 import Vehicles from "./src/screens/Vehicles";
 import Approvals from "./src/screens/Approvals";
 import AdminDashboard from "./src/screens/AdminDashboard";
-import Users from "./src/screens/Users";
+import ComingSoon from "./src/screens/ComingSoon";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +37,7 @@ export default function App() {
           component={Vehicles}
         />
         <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
-        <Stack.Screen name="Users" component={Users} />
+        <Stack.Screen name="ComingSoon" component={ComingSoon} />
         <Stack.Screen name="Approvals" component={Approvals} />
         <Stack.Screen
           name="Profile"
