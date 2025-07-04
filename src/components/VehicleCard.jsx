@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const VehicleCard = ({ item, status, onDelete }) => {
+const VehicleCard = ({ item, status, onDelete, onDownload }) => {
   const handleDeletePress = () => {
     Alert.alert(
       "Delete Vehicle",
@@ -54,12 +55,22 @@ const VehicleCard = ({ item, status, onDelete }) => {
               {status.toUpperCase()}
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={handleDeletePress}
-            style={styles.deleteButton}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
+          <View style={styles.actionsContainer}>
+            {status === "approved" && onDownload && (
+              <TouchableOpacity
+                onPress={onDownload}
+                style={styles.downloadButton}
+              >
+                <MaterialIcons name="file-download" size={20} color="#0782F9" />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={handleDeletePress}
+              style={styles.deleteButton}
+            >
+              <MaterialIcons name="delete" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
         <Text style={styles.vehicleMakeModel}>
           {item.vehicleMake} {item.vehicleModel}
@@ -135,16 +146,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
   },
+  actionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   deleteButton: {
     backgroundColor: "#FF3B30",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    padding: 6,
     borderRadius: 4,
   },
-  deleteButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 12,
+  downloadButton: {
+    backgroundColor: "#e6f7ff",
+    padding: 6,
+    borderRadius: 4,
   },
 });
 

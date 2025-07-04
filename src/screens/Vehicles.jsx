@@ -20,6 +20,7 @@ import {
   collectionGroup,
 } from "../firebase";
 import VehicleCard from "../components/VehicleCard";
+import { generateSticker } from "../utility/generatesticker";
 
 const Vehicles = () => {
   const navigation = useNavigation();
@@ -28,7 +29,6 @@ const Vehicles = () => {
   const [activeTab, setActiveTab] = useState("approved");
   const isAdminView = route.params?.adminView || false;
   const showOnlyApproved = route.params?.showOnlyApproved || false;
-
   useEffect(() => {
     let unsubscribe;
     let q;
@@ -141,7 +141,11 @@ const Vehicles = () => {
               onDelete={() =>
                 handleDeleteVehicle(item.id, isAdminView ? item.userId : null)
               }
-              showOwner={isAdminView}
+              onDownload={
+                !isAdminView && item.status === "approved"
+                  ? () => generateSticker(item)
+                  : null
+              }
             />
           )}
           contentContainerStyle={styles.listContainer}
@@ -252,5 +256,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 export default Vehicles;
