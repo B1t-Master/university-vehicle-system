@@ -23,8 +23,7 @@ This is a mobile application developed using **React Native** and **Firebase**, 
 
 > [!IMPORTANT]  
 > You will need to download the "Expo Go" app from your designated app store
-> Adroid: https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs
-> Apple: https://apps.apple.com/us/app/expo-go/id982107779
+> https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs >https://apps.apple.com/us/app/expo-go/id982107779
 
 ```bash
 #Clone the repository
@@ -36,17 +35,17 @@ npm install
 npx expo start --tunnel
 ```
 
-> [!IMPORANT]
+> [!CAUTION]
 > You may need to write in the url of the code since the scanning function is not always consistent you may come across an error from time to time
 > You may also need to update the expo version in the dependancies
 
 ## Screenshots
 
 |--------------|-----------|------------------|
-|<img src="./screenshots/login.jpg" width="200" height="200"/><img src="./screenshots/user-dashboard.jpg" width="200" height="200"/> | <img src="./screenshots/approvals.jpg" width="200" height="200"/>|
+|<img src="./screenshots/login.jpg" width="200" height="433.6"/> | <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6"/> | <img src="./screenshots/approvals.jpg" width="200" height="433.6"/>|
 
 |-------------|--------------|--------------|
-| ![Add Vehicle](./screenshots/add-vehicle.jpg) | ![Vehicle](./screenshots/vehicles.jpg) | ![AdminDashbaord](./screenshots/admin-dashbaord.jpg) |
+|<img src="./screenshots/add-vehicle.jpg" width="200" height="433.6"/> | <img src="./screenshots/vehicles.jpg" width="200" height="433.6"/> | <img src="./screenshots/admin-dashaboard.jpg" width="200" height="433.6"/>|
 
 |-----------------|
-| ![Sticker](./screenshots/qr.jpg) |
+| <img src="./screenshots/qr.jpg" width="200" height="433.6"/>|
