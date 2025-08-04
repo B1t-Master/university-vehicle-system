@@ -38,6 +38,10 @@ npx expo start --tunnel
 
 ## Demo
 
+
+https://github.com/user-attachments/assets/59899f66-e159-493a-8f2d-4a8e58e61aec
+
+
 <p align="center" width="100%">
 <img src="./demo/qr.jpg" width="200" height="211"/>
 </p>
