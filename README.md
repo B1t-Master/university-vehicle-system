@@ -1,0 +1,54 @@
+# University Vehicle Sticker System
+
+This is a mobile application developed using **React Native** and **Firebase**, designed to streamline the process of vehicle registration, sticker generation, and administrative approval for university staff and students. The system provides different interfaces for both users and administrators.
+
+## Features
+
+- **User Authentication** using Firebase
+- **Add and manage vehicles**
+- **Admin dashboard** for approval of vehicle requests
+- **Profile editing**
+- **Dynamic sticker generation**
+- **Modular and reusable UI components**
+- **Clear separation of user and admin roles**
+
+## Tech Stack
+
+- **React Native (Expo)**
+- **Firebase (Auth & Firestore)**
+- **JavaScript (ES6+)**
+- **Modular Component Architecture**
+
+## Installation and Setup
+
+> [!IMPORTANT]  
+> You will need to download the "Expo Go" app from your designated app store
+> Adroid: https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs
+> Apple: https://apps.apple.com/us/app/expo-go/id982107779
+
+```bash
+#Clone the repository
+git clone https://github.com/B1t-Master/university-vehicle-system.git
+cd university-vehicle-system
+#Install dependacies
+npm install
+#Run the Project
+npx expo start --tunnel
+```
+
+> [!IMPORANT]
+> You may need to write in the url of the code since the scanning function is not always consistent you may come across an error from time to time
+> You may also need to update the expo version in the dependancies
+
+## Screenshots
+
+## 📸 Screenshots
+
+|--------------|-----------|------------------|
+| ![Login](./screenshots/login-screen.jpg) | ![UserDashboard](./screenshots/user-dashboard.jpg) | ![Approvals](./screenshots/approvals.jpg) |
+
+|-------------|--------------|--------------|
+| ![Add Vehicle](./screenshots/add-vehicle.jpg) | ![Vehicle](./screenshots/vehicles.jpg) | ![AdminDashbaord](./screenshots/admin-dashbaord.jpg) |
+
+|-----------------|
+| ![Sticker](./screenshots/qr.jpg) |

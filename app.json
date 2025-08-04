@@ -18,20 +18,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.prodisaac.IS_1"
+      }
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "486cc4db-97a9-422c-bd8a-e84916115afa"
-      }
-    },
-    "plugins": [
-      "expo-asset"
-    ]
+    "plugins": ["expo-asset"]
   }
 }
