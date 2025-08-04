@@ -38,7 +38,7 @@ npx expo start --tunnel
 
 ## Screenshots
 
-<div style="display: flex; flex-wrap: wrap;justify-content: center;">
+<div style="display: flex; flex-wrap: wrap;">
 
   <img src="./screenshots/login.jpg" width="200" height="433.6" />
   <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6" />
@@ -48,6 +48,8 @@ npx expo start --tunnel
   <img src="./screenshots/vehicles.jpg" width="200" height="433.6" />
   <img src="./screenshots/admin-dashboard.jpg" width="200" height="433.6" />
 
-  <img style="align-self=center;" src="./screenshots/qr.jpg" width="200" height="211" />
+  <div style="width: 100%; text-align: center; margin-top: 10px;">
+    <img src="./screenshots/qr.jpg" width="200" height="211" />
+  </div>
 
 </div>
