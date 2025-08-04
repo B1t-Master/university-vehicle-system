@@ -41,7 +41,7 @@ npx expo start --tunnel
 
 ## Screenshots
 
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+<div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 
   <img src="./screenshots/login.jpg" width="200" height="433.6" />
   <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6" />
