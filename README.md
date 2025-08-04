@@ -23,9 +23,7 @@ This is a mobile application developed using **React Native** and **Firebase**, 
 
 > [!IMPORTANT]  
 > You will need to download the "Expo Go" app from your designated app store
-
 > Adroid: https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs
-
 > Apple: https://apps.apple.com/us/app/expo-go/id982107779
 
 ```bash
@@ -45,7 +43,7 @@ npx expo start --tunnel
 ## Screenshots
 
 |--------------|-----------|------------------|
-| ![Login] <img src="./screenshots/login.jpg" width="200" />| ![UserDashboard](./screenshots/user-dashboard.jpg) | ![Approvals](./screenshots/approvals.jpg) |
+|<img src="./screenshots/login.jpg" width="200" height="200"/><img src="./screenshots/user-dashboard.jpg" width="200" height="200"/> | <img src="./screenshots/approvals.jpg" width="200" height="200"/>|
 
 |-------------|--------------|--------------|
 | ![Add Vehicle](./screenshots/add-vehicle.jpg) | ![Vehicle](./screenshots/vehicles.jpg) | ![AdminDashbaord](./screenshots/admin-dashbaord.jpg) |
