@@ -41,11 +41,8 @@ npx expo start --tunnel
 
 ## Screenshots
 
-|--------------|-----------|------------------|
-|<img src="./screenshots/login.jpg" width="200" height="433.6"/> | <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6"/> | <img src="./screenshots/approvals.jpg" width="200" height="433.6"/>|
+<img src="./screenshots/login.jpg" width="200" height="433.6"/> <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6"/><img src="./screenshots/approvals.jpg" width="200" height="433.6"/>
 
-|-------------|--------------|--------------|
-|<img src="./screenshots/add-vehicle.jpg" width="200" height="433.6"/> | <img src="./screenshots/vehicles.jpg" width="200" height="433.6"/> | <img src="./screenshots/admin-dashaboard.jpg" width="200" height="433.6"/>|
+<img src="./screenshots/add-vehicle.jpg" width="200" height="433.6"/><img src="./screenshots/vehicles.jpg" width="200" height="433.6"/><img src="./screenshots/admin-dashaboard.jpg" width="200" height="433.6"/>
 
-|-----------------|
-| <img src="./screenshots/qr.jpg" width="200" height="433.6"/>|
+<img src="./screenshots/qr.jpg" width="200" height="433.6"/>
