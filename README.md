@@ -36,20 +36,7 @@ npx expo start --tunnel
 > You may need to write in the url of the code since the scanning function is not always consistent you may come across an error from time to time.
 > You may also need to update the expo version in the dependancies
 
-## Screenshots
+## Demo
 
-<div style="display: flex; flex-wrap: wrap;">
-
-  <img src="./screenshots/login.jpg" width="200" height="433.6" />
-  <img src="./screenshots/user-dashboard.jpg" width="200" height="433.6" />
-  <img src="./screenshots/approvals.jpg" width="200" height="433.6" />
-
-  <img src="./screenshots/add-vehicle.jpg" width="200" height="433.6" />
-  <img src="./screenshots/vehicles.jpg" width="200" height="433.6" />
-  <img src="./screenshots/admin-dashboard.jpg" width="200" height="433.6" />
-
-  <div style="width: 100%; text-align: center; margin-top: 10px;">
-    <img src="./screenshots/qr.jpg" width="200" height="211" />
-  </div>
-
-</div>
+<video src='./demo/demo.mp4' width=200 height="433">
+<img src="./demo/qr.jpg" width="200" height="211"/>
