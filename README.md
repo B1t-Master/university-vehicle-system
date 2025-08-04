@@ -4,20 +4,17 @@ This is a mobile application developed using **React Native** and **Firebase**, 
 
 ## Features
 
-- **User Authentication** using Firebase
+- **User Authentication**
 - **Add and manage vehicles**
-- **Admin dashboard** for approval of vehicle requests
-- **Profile editing**
-- **Dynamic sticker generation**
-- **Modular and reusable UI components**
-- **Clear separation of user and admin roles**
+- **Admin dashboard**
+- **Real time updates**
+- **User and admin roles**
 
 ## Tech Stack
 
 - **React Native (Expo)**
 - **Firebase (Auth & Firestore)**
 - **JavaScript (ES6+)**
-- **Modular Component Architecture**
 
 ## Installation and Setup
 
@@ -51,6 +48,6 @@ npx expo start --tunnel
   <img src="./screenshots/vehicles.jpg" width="200" height="433.6" />
   <img src="./screenshots/admin-dashboard.jpg" width="200" height="433.6" />
 
-  <img src="./screenshots/qr.jpg" width="200" height="211" />
+  <img style="align-self=center;" src="./screenshots/qr.jpg" width="200" height="211" />
 
 </div>
