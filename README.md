@@ -38,5 +38,6 @@ npx expo start --tunnel
 
 ## Demo
 
-<video src='./demo/demo.mp4' width=200 height=433></video>
+<p align="center" width="100%">
 <img src="./demo/qr.jpg" width="200" height="211"/>
+</p>
